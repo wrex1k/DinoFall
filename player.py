@@ -5,12 +5,25 @@ class Player(pygame.sprite.Sprite):
     def __init__(self, screen, x, y):
         super().__init__()
         self.screen = screen
-        self.image = pygame.image.load('assets/sheets/DinoSprites - doux.png').convert_alpha()
         self.rect = pygame.Rect(x, y, 48, 48)
         self.direction = 'right'
         self.speed = 4
         self.gravity = 3
         self.hp = 3
+
+        self.change_dino('blue')
+        self.current_animation = self.animations['idle_right']
+        self.animation_frame = 0
+
+    def change_dino(self, color):
+        path = 'assets/sheets/'
+        dinos = {
+            'blue': pygame.image.load(f'{path}DinoSprites - doux.png').convert_alpha(),
+            'red': pygame.image.load(f'{path}DinoSprites - mort.png').convert_alpha(),
+            'yellow': pygame.image.load(f'{path}DinoSprites - tard.png').convert_alpha(),
+            'green': pygame.image.load(f'{path}DinoSprites - vitatest.png').convert_alpha(),
+        }
+        self.image = dinos[color]
 
         self.animations = {
             'idle_right': self.load_animation(0, 3),
@@ -19,9 +32,6 @@ class Player(pygame.sprite.Sprite):
             'walk_left': self.load_animation(3, 8, flip=True),
             'dead': self.load_animation(15, 17)
         }
-
-        self.current_animation = self.animations['idle_right']
-        self.animation_frame = 0
 
     def draw_hitbox(self):
         pygame.draw.rect(self.screen, (255, 0, 0), self.rect)
@@ -39,11 +49,11 @@ class Player(pygame.sprite.Sprite):
         keys = pygame.key.get_pressed()
         moving = False
 
-        if keys[pygame.K_a]:
+        if keys[pygame.K_LEFT]:
             self.rect.x -= self.speed
             self.direction = 'left'
             moving = True
-        if keys[pygame.K_d]:
+        if keys[pygame.K_RIGHT]:
             self.rect.x += self.speed
             self.direction = 'right'
             moving = True
@@ -62,4 +72,4 @@ class Player(pygame.sprite.Sprite):
         self.image = self.current_animation[int(self.animation_frame)]
 
     def draw(self):
-        self.screen.blit(pygame.transform.scale(self.image, (48, 48)), (self.rect.x, self.rect.y))
+        self.screen.blit(pygame.transform.scale(self.image, (48*5, 48*5)), (self.rect.x, self.rect.y))
