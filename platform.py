@@ -85,7 +85,7 @@ class Platform(pygame.sprite.Sprite):
         # move the platform upwards
         self.rect.y -= self.speed * delta_time
 
-        self.get_info()
+        #self.get_info()
 
     def draw(self):
         self.screen.blit(self.image, self.rect)
