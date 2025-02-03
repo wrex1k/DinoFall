@@ -10,6 +10,7 @@ class Game:
         pygame.init()   
         pygame.mixer.init()
         self.screen = pygame.display.set_mode((screen_width, screen_height))
+        pygame.display.set_caption('DinoFall')
         self.clock = pygame.time.Clock()
         self.delta_time = 0
 
@@ -73,7 +74,6 @@ class Game:
         running = True
         while running:
             delta_time = self.clock.tick(60) / 1000.0
-            pygame.display.set_caption(str(round(self.clock.get_fps(), 2)))
 
             # events
             for event in pygame.event.get():

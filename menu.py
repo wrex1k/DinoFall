@@ -12,7 +12,7 @@ class Menu:
         self.selected_index = 0
 
         # initialized menu texts
-        self.title_text = big_font.render('Dino Fall', True, ('white'))
+        self.title_text = big_font.render('DinoFall', True, ('white'))
         self.controls_text = big_font.render('Controls', True, ('white'))
         self.arrows_text = medium_font.render('Move', True, ('white'))
         self.color_text = medium_font.render('Color Change', True, ('white'))
