@@ -152,6 +152,6 @@ class Menu:
                     return 'exit'
                 if self.selected_index == 3:
                     set_music(not get_music())
-                    play_music('8-bit-menu') if get_music() else stop_music()
+                    play_music('menu') if get_music() else stop_music()
                 if self.selected_index == 4:
                     set_sound(not get_sound())
