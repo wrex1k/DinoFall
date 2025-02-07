@@ -1,11 +1,13 @@
 import pygame
-from settings import *
+from utils import load_frames, resource_path
+from audiomanager import *
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, screen, x, y):
+    def __init__(self, screen, x, y, color):
         super().__init__()
         # reference to screen
         self.screen = screen
+
         # player attributes
         self.scale = 3
         self.rect = pygame.Rect(x, y, 24*self.scale, 24*self.scale-10)
@@ -17,11 +19,10 @@ class Player(pygame.sprite.Sprite):
         self.max_score = 0
         self.coins = 0
         self.dead = False
-        self.was_on_platform = False
 
         # list of available dinos and default color
         self.dinos = ['blue', 'red', 'yellow', 'green']
-        self.current_color = 'green'
+        self.current_color = color
 
         # loading all avaible animations for the dino colors in dictionary
         self.all_animations = {color: self.load_animations(color) for color in self.dinos}
@@ -41,7 +42,7 @@ class Player(pygame.sprite.Sprite):
 
     # load animations for a dino based on given color
     def load_animations(self, color):
-        path = f'assets/sheets/DinoSprites - {color}.png'
+        path = resource_path(f'assets/sheets/DinoSprites - {color}.png')
         spritesheet = pygame.image.load(path).convert_alpha()
 
         return {
@@ -61,52 +62,72 @@ class Player(pygame.sprite.Sprite):
     # check if the player is dead
     def check_if_dead(self):
         if self.rect.top < 50 or self.rect.bottom >= screen_height:
+            set_game_state('gameover')
+            set_first_game(False)
             stop_music()
-            set_playing(False)
-            set_game_over(True)
             self.dead = True
-            self.speed = 0
-            self.velocity_y = 0
-            self.gravity = 0
             if self.score > self.max_score:
                 self.max_score = self.score
 
-    # restart the player by resetting attributes to the initial state
-    def restart_player(self):
-        set_game_over(False)
+    def reset_player(self, x, y, color):
         self.dead = False
-        self.speed = 220
         self.score = 0
         self.coins = 0
+        self.rect.x = x
+        self.rect.y = y
         self.velocity_y = 0
-        self.gravity = 1.5
-        self.rect.x = 100
-        self.rect.y = 200
+        self.speed = 220
+        self.current_color = color
+    
+    def handle_input(self, delta_time):
+        keys = pygame.key.get_pressed()
+
+        # Handle horizontal movement (left and right)
+        if keys[pygame.K_LEFT] and self.rect.left > 0:
+            self.rect.x -= self.speed * delta_time
+            self.direction = 'left'
+            self.moving = True
+        if keys[pygame.K_RIGHT] and self.rect.right < screen_width:
+            self.rect.x += self.speed * delta_time
+            self.direction = 'right'
+            self.moving = True 
+
+        # Handle dino color change
+        if keys[pygame.K_a]:
+            self.change_dino('blue')
+        elif keys[pygame.K_s]:
+            self.change_dino('green')
+        elif keys[pygame.K_d]:
+            self.change_dino('red')
+        elif keys[pygame.K_f]:
+            self.change_dino('yellow')
 
     def update(self, delta_time, platforms):
         # reset platform interaction and moving status
+        self.moving = False
         self.on_platform = False
-        moving = False
+
         # store old x position to collision check
-        old_x = self.rect.x  
+        old_x = self.rect.x
+          
+        # handling input
+        self.handle_input(delta_time)
 
         if not self.dead:
             # score calculation based on coin collected
             self.score += 1 if self.coins == 0 else 1 * self.coins
 
-            keys = pygame.key.get_pressed()
-            # handle left and right movement
-            if keys[pygame.K_LEFT] and self.rect.left > 0:
-                self.rect.x -= self.speed * delta_time
-                self.direction = 'left'
-                moving = True
-            if keys[pygame.K_RIGHT] and self.rect.right < screen_width:
-                self.rect.x += self.speed * delta_time
-                self.direction = 'right'
-                moving = True
-
             # check for collisions with platforms
             for platform in platforms:
+
+                if platform.coin and not platform.coin.collected:
+                # check collision with coin
+                    if pygame.sprite.collide_mask(self, platform.coin):
+                        self.coins += 1
+                        platform.coin.collected = True
+                        if get_sound():
+                            play_sound('collect')
+
                 if pygame.sprite.collide_mask(self, platform):   
 
                     # set speed based on corected colors
@@ -124,7 +145,7 @@ class Player(pygame.sprite.Sprite):
                         # if the dino just landed, play sound
                         if not self.was_on_platform:
                             if get_sound():
-                                play_sound('drop')
+                                play_sound('land')
                         break
                     else:
                         # if the player is not on the platform, move it down
@@ -146,21 +167,21 @@ class Player(pygame.sprite.Sprite):
                 self.velocity_y = min(self.velocity_y, 5)
 
             # update the player animation based on movement
-            if moving:
+            if self.moving:
                 self.current_animation = self.animations[f'walk_{self.direction}']
             else:
                 self.current_animation = self.animations[f'idle_{self.direction}']
 
             # update the animation frame index
-            self.animation_frame += 5 * delta_time
+            self.animation_frame += 5 * delta_time  
+
             if self.animation_frame >= len(self.current_animation):
                 self.animation_frame = 0
 
             # update the player image
             self.image = self.current_animation[int(self.animation_frame)]
             
-            # check
-            #self.max_score = max(self.max_score, self.score)
+            #self.get_info()
 
             # check if the player is dead
             self.check_if_dead()

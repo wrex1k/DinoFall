@@ -1,16 +1,16 @@
 import pygame, random
-from settings import *
+from utils import load_frames, resource_path
+from audiomanager import *
 
 class Coin(pygame.sprite.Sprite):
-    def __init__(self, screen, player, topleft, topright, speed):
+    def __init__(self, screen, x, y, speed):
         super().__init__()
         # reference to screen and player
         self.screen = screen
-        self.player = player
         
         # random coin position
-        self.x = random.randint(topleft[0] + 50, topright[0] - 50)
-        self.y = topleft[1] - 50
+        self.x = x
+        self.y = y
 
         # coin attributes
         self.collected = False
@@ -27,22 +27,17 @@ class Coin(pygame.sprite.Sprite):
 
     # use coin spritesheet to load frames, set position and create mask
     def load_animation(self):
-        sprite_sheet = pygame.image.load('assets/coins/coin.png').convert_alpha()
+        path = resource_path('assets/coins/coin.png')
+        sprite_sheet = pygame.image.load(path).convert_alpha()
         self.frames = load_frames(0, 8, 20, 20, 2, sprite_sheet)
         self.rect = self.frames[0].get_rect(topleft=(self.x, self.y))
         self.mask = pygame.mask.from_surface(self.frames[0])
 
+    # updating speed to synchronize coin draw
+    def update_speed(self, speed):
+        self.speed = speed
 
     def update(self, delta_time):
-        # check collision with player
-        if pygame.sprite.collide_mask(self, self.player) and not self.collected:
-            if not self.played:
-                self.player.coins += 1 # increase player coins
-                if get_sound():
-                    play_sound('collect') # play collect sound
-                    self.played = True
-                self.collected = True # mark coin as collected
-
         # move coin upwards
         self.rect.y -= self.speed * delta_time
         self.animation_time += delta_time

@@ -1,10 +1,14 @@
 import pygame
-from settings import *
+from settings import * 
+from utils import *
+from audiomanager import * 
 
 class Menu:
     def __init__(self, screen):
         # reference to screen
         self.screen = screen
+
+        if get_music(): play_music('menu')
 
         # menu attributes
         self.scale = 4
@@ -49,20 +53,10 @@ class Menu:
             'left_arrow': self.controls_frames[4],
             'right_arrow': self.controls_frames[5]
         }
-
-    # draw clouds on screen
-    def draw_clouds(self):
-        self.screen.fill(('#0099db'))
-        cloud1 = get_image('cloud1', self.scale)
-        cloud2 = get_image('cloud2', self.scale)
-        cloud3 = get_image('cloud3', self.scale)
-        self.screen.blit(cloud1, (0, 120))
-        self.screen.blit(cloud2, (700, 300))
-        self.screen.blit(cloud3, (0, 600))
         
     def draw_controls(self):
         # draw background
-        self.draw_clouds()
+        draw_clouds(self.screen)
 
         # draw controls hud
         self.screen.blit(self.hud_controls, self.hud_controls_rect) 
@@ -92,7 +86,7 @@ class Menu:
 
     def draw_menu(self):
         # draw background
-        self.draw_clouds()
+        draw_clouds(self.screen)
         
         # draw title and images
         self.screen.blit(self.title_text, (screen_width / 2 - self.title_text.get_width() / 1.6, 70))
@@ -132,26 +126,34 @@ class Menu:
         self.screen.blit(text_surf, text_rect)
 
     # menu event handler (key events to navigation)
-    def handle_input(self, event):
+    def handle_menu_input(self, event):
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_DOWN:
-                self.selected_index = (self.selected_index + 1) % self.menu_elements
-                if get_sound(): play_sound('click')
-            if event.key == pygame.K_UP:
+            if event.key == pygame.K_UP: # menu navigation up
                 self.selected_index = (self.selected_index - 1) % self.menu_elements
                 if get_sound(): play_sound('click')
+            if event.key == pygame.K_DOWN: # menu navigation down
+                self.selected_index = (self.selected_index + 1) % self.menu_elements
+                if get_sound(): play_sound('click')
+            
             if event.key == pygame.K_RETURN:
                 if self.selected_index == 0:
-                    stop_music()
-                    if get_music(): 
-                        play_music('8-bit-game')
-                    return 'play'
-                if self.selected_index == 1:
-                    return 'controls'
-                if self.selected_index == 2:
-                    return 'exit'
-                if self.selected_index == 3:
+                    if get_first_game() == False:
+                        set_game_state('gameover')
+                        if get_sound(): stop_music()
+                    else: 
+                        set_game_state('play')
+                        if get_sound(): play_music('8-bit-game')
+                if self.selected_index == 1: # controls
+                    set_game_state('controls')
+                if self.selected_index == 2: # exit
+                    set_game_state('exit')
+                if self.selected_index == 3: # music
                     set_music(not get_music())
-                    play_music('menu') if get_music() else stop_music()
-                if self.selected_index == 4:
+                    unpause_music() if get_music() else pause_music()
+                if self.selected_index == 4: # sound
                     set_sound(not get_sound())
+
+    # controls event handler       
+    def handle_controls_input(self, event):
+            if event.key == pygame.K_ESCAPE:
+                set_game_state('menu')
