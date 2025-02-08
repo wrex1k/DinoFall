@@ -71,14 +71,16 @@ class Menu:
         x, y = 450, 350
         for control in ['a.blue', 's.green', 'd.red', 'f.yellow']:
             button = self.button_images[control]
+            button_width = button.get_width()  
             control = control.split('.')
             text = small_font.render(control[1], True, ('white'))
+            text_width = text.get_width() 
             self.screen.blit(button, (x, y))
-            self.screen.blit(text, (x, y + 70))
+            self.screen.blit(text, (x + (button_width - text_width) // 2, y + 70))
             x += 80
 
         # draw texts for controls
-        self.screen.blit(self.controls_text, (screen_width / 2 - self.controls_text.get_width() / 2, 50))
+        self.screen.blit(self.controls_text, (screen_width / 2 - self.controls_text.get_width() / 2, 70))
         self.screen.blit(self.arrows_text, (400, 270))
         self.screen.blit(self.color_text, (220, 370))
         self.screen.blit(self.exit_text, (screen_width / 2 - self.exit_text.get_width() / 2, 480))

@@ -19,6 +19,8 @@ class Player(pygame.sprite.Sprite):
         self.max_score = 0
         self.coins = 0
         self.dead = False
+        self.powerup = False
+        self.powerup_duration = 0
 
         # list of available dinos and default color
         self.dinos = ['blue', 'red', 'yellow', 'green']
@@ -42,7 +44,7 @@ class Player(pygame.sprite.Sprite):
 
     # load animations for a dino based on given color
     def load_animations(self, color):
-        path = resource_path(f'assets/sheets/DinoSprites - {color}.png')
+        path = resource_path(f'assets/dino/DinoSprites - {color}.png')
         spritesheet = pygame.image.load(path).convert_alpha()
 
         return {
@@ -77,6 +79,7 @@ class Player(pygame.sprite.Sprite):
         self.rect.y = y
         self.velocity_y = 0
         self.speed = 220
+        self.powerup = False
         self.current_color = color
     
     def handle_input(self, delta_time):
@@ -110,6 +113,12 @@ class Player(pygame.sprite.Sprite):
         # store old x position to collision check
         old_x = self.rect.x
           
+        # handling powerup
+        if self.powerup_duration > 0:
+            self.powerup_duration -= 1
+            if self.powerup_duration <= 0:
+                self.powerup = False
+        
         # handling input
         self.handle_input(delta_time)
 
@@ -126,15 +135,24 @@ class Player(pygame.sprite.Sprite):
                         self.coins += 1
                         platform.coin.collected = True
                         if get_sound():
-                            play_sound('collect')
+                            play_sound('collect-coin')
+
+                if platform.powerup and not platform.powerup.collected:
+                # check collision with powerup
+                    if pygame.sprite.collide_mask(self, platform.powerup):
+                        platform.powerup.collected = True
+                        self.powerup_duration = 250
+                        self.powerup = True
+                        if get_sound():
+                            play_sound('collect-powerup')
 
                 if pygame.sprite.collide_mask(self, platform):   
-
                     # set speed based on corected colors
                     self.speed = 220 if platform.color == self.current_color else 100
                     
-                    # change dino color to match platform color
-                    #self.change_dino(platform.color)   
+                    # change dino color by powerup
+                    if self.powerup:
+                        self.change_dino(platform.color)   
     
                     # handle player landing on the platform
                     if self.rect.bottom <= platform.rect.top + 10:

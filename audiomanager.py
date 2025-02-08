@@ -8,7 +8,8 @@ pygame.mixer.init()
 sound_effects = {
     'click': pygame.mixer.Sound(resource_path('sounds/click.mp3')),
     'land': pygame.mixer.Sound(resource_path('sounds/land.mp3')),
-    'collect': pygame.mixer.Sound(resource_path('sounds/collect.mp3'))
+    'collect-coin': pygame.mixer.Sound(resource_path('sounds/collect-coin.mp3')),
+    'collect-powerup': pygame.mixer.Sound(resource_path('sounds/collect-powerup.mp3'))
 }
 
 # dictionary of music_tracks

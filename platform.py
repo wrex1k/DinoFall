@@ -1,7 +1,7 @@
 import pygame, random
 from utils import *
 from settings import * 
-from coin import Coin
+from item import Item
 
 class Platform(pygame.sprite.Sprite):
     colors = ['blue', 'green', 'red', 'yellow'] # list of possible colors for platforms
@@ -14,14 +14,13 @@ class Platform(pygame.sprite.Sprite):
         self.id = id
         self.color = self.set_color()
         self.type = self.set_type()
-        self.image_path = resource_path(f'assets/platforms/{self.color}/{self.type}.png')
-        self.image = pygame.image.load(self.image_path).convert_alpha()
-        self.image = pygame.transform.scale_by(self.image, 3)
+        self.image = get_image(f'{self.color}_{self.type}', 3)
         self.mask = pygame.mask.from_surface(self.image)
         self.rect = self.image.get_rect(topleft=(x, y))   
         self.speed = 120
         self.max_speed = 200
-        self.coin = self.spawn_coin(self.rect.width)
+        self.coin = None
+        self.powerup = None
 
     # info about platform for debugging
     def get_info(self):
@@ -31,30 +30,31 @@ class Platform(pygame.sprite.Sprite):
     def respawn(self):
         self.color = self.set_color()
         self.type = self.set_type()
-        self.image_path = resource_path(f'assets/platforms/{self.color}/{self.type}.png')
-        self.image = pygame.image.load(self.image_path).convert_alpha()
-        self.image = pygame.transform.scale_by(self.image, 3)
+        self.image = get_image(f'{self.color}_{self.type}', 3)
         self.mask = pygame.mask.from_surface(self.image)
         self.rect = self.image.get_rect()
         self.rect.x = random.randint(0, screen_width//2 - self.image.get_width() - 30) + random.randint(0, screen_width//2)
         self.rect.y = 980
-        self.coin = self.spawn_coin(self.rect.width)
+        self.coin = self.spawn_item('coin')
+        self.powerup = self.spawn_item('powerup')
 
     # randomly pick platform type with a 70 chance being small
     def set_type(self):
         return random.choices(['small', 'medium'], weights=[70, 30])[0]
 
     # spawn coin on the platform
-    def spawn_coin(self, width):
+    def spawn_item(self, item):
         num = random.randint(0, 100)
-        # 40% chance of spawning a coin
-        if num > 60:
-            left = self.rect.topleft[0]
-            right = self.rect.topright[0] - 50
-            coin_x = random.randint(left, right)
-            coin_y = self.rect.top - 50 
-            coin = Coin(self.screen, coin_x, coin_y, self.speed)
-            return coin
+        left = self.rect.topleft[0]
+        right = self.rect.topright[0] - 50
+        x = random.randint(left, right)
+        y = self.rect.top - 50 
+        if item == 'coin' and num > coin_probability:
+            # 40% chance of spawning a coin
+            return Item(self.screen, item, x, y, self.speed)
+        if item == 'powerup' and num > powerup_probability and self.type == 'small' and not self.coin:
+            # 10% chance of spawning a powerup
+            return Item(self.screen, item, x, y, self.speed)
 
     # randomly pick and remove color from list, if empty refill
     def set_color(self):
@@ -78,6 +78,12 @@ class Platform(pygame.sprite.Sprite):
             self.coin.update_speed(self.speed)
             self.coin.update(delta_time)
             self.coin.draw()
+
+        # update and draw the powerup if exist
+        if self.powerup:
+            self.powerup.update_speed(self.speed)
+            self.powerup.update(delta_time)
+            self.powerup.draw()
 
         # respawn the platform if out of screen
         if self.rect.bottom <= 50:
