@@ -36,7 +36,8 @@ def get_image(type, scale):
             'red_small': pygame.image.load(resource_path(f'{platform_path}red/small.png')).convert_alpha(),
             'red_medium': pygame.image.load(resource_path(f'{platform_path}red/medium.png')).convert_alpha(),
             'yellow_small': pygame.image.load(resource_path(f'{platform_path}yellow/small.png')).convert_alpha(),
-            'yellow_medium': pygame.image.load(resource_path(f'{platform_path}yellow/medium.png')).convert_alpha()
+            'yellow_medium': pygame.image.load(resource_path(f'{platform_path}yellow/medium.png')).convert_alpha(),
+            'icon': pygame.image.load(resource_path('assets/icon.png')).convert_alpha()
         }
         image = images[type]
         return pygame.transform.scale_by(image, scale)

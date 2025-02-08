@@ -13,6 +13,7 @@ class Game:
 
         self.screen = pygame.display.set_mode((screen_width, screen_height))
         pygame.display.set_caption('DinoFall')
+        pygame.display.set_icon(get_image('icon', 1))
         pygame.mouse.set_visible(False)
         self.clock = pygame.time.Clock()
         self.delta_time = 0
