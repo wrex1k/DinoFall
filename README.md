@@ -80,25 +80,19 @@ Hra využíva minimalistický pixel art štýl, ktorý som vytvoril úpravou exi
 - **UI prvky**: Tlačidlá, HUD a ďalšie herné rozhranie som navrhol a vytvoril samostatne, pričom som dbal na ich prehľadnosť a zapadnutie do celkového vizuálu hry.
 
 <p align="center">
-  <img src="https://github.com/wrex1k/DinoFall/blob/main/readme/nature-platformer-tileset-16x16.png" 
-       alt="nature platformer tileset" 
-       width="250">
+  <img src="https://github.com/wrex1k/DinoFall/blob/main/readme/nature-platformer-tileset-16x16.png" alt="nature platformer tileset">
   <br>
   <em>Obrázok 4 Ukážka nature-platformer-tileset-16x16.png</em>
 </p>
 
 <p align="center">
-  <img src="https://github.com/wrex1k/DinoFall/blob/main/assets/menu/spritesheet-controls.png" 
-       alt="control button spritesheet" 
-       style="width: 300px; height: auto;">
+  <img src="https://github.com/wrex1k/DinoFall/blob/main/readme/DinoFall%20-%20keybuttons.png" alt="control button spritesheet">
   <br>
   <em>Obrázok 5 Ukážka spritesheet-control.png</em>
 </p>
 
 <p align="center">
-  <img src="https://github.com/wrex1k/DinoFall/blob/main/assets/menu/spritesheet-sound.png" 
-       alt="sound button spritesheet" 
-       style="width: 200px; height: auto;">
+  <img src="https://github.com/wrex1k/DinoFall/blob/main/readme/DinoFall%20-%20soundbuttons.png" alt="sound button spritesheet">
   <br>
   <em>Obrázok 6 Ukážka spritesheet-sound.png</em>
 </p>
@@ -114,6 +108,13 @@ Hra využíva minimalistický pixel art štýl, ktorý som vytvoril úpravou exi
 **Animácia mince**
 <p align="center">
   <img src="https://github.com/wrex1k/DinoFall/blob/main/readme/DinoFall%20-%20coin.gif" alt="animacia mince">
+  <br>
+  <em>Obrázok 8 Ukážka hry - Animácia mince</em>
+</p>
+
+**Animácia powerupu**
+<p align="center">
+  <img src="https://github.com/wrex1k/DinoFall/blob/main/readme/DinoFall%20-%20powerup.gif" alt="animacia powerupu">
   <br>
   <em>Obrázok 8 Ukážka hry - Animácia mince</em>
 </p>
