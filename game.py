@@ -13,10 +13,11 @@ class Game:
 
         self.screen = pygame.display.set_mode((screen_width, screen_height))
         pygame.display.set_caption('DinoFall')
+        pygame.mouse.set_visible(False)
         self.clock = pygame.time.Clock()
         self.delta_time = 0
 
-        #* initialized menu, platforms and player
+        # initialized menu, platforms and player
         self.menu = Menu(self.screen)
         self.platforms = self.create_platforms(7)
         self.player = Player(self.screen, self.platforms[2].rect.centerx, self.platforms[2].rect.top - 100, self.platforms[2].color)
@@ -44,9 +45,11 @@ class Game:
         # initialized game text 
         self.score_text = medium_font.render(f"Score: {int(self.player.score / 10)}", True, ('white'))
         self.coins_text = medium_font.render(f"Coins: {(self.player.coins)}", True, ('white'))
+        self.powerup_text = medium_font.render(f"Powerup: {'off' if not self.player.powerup else int(self.player.powerup_duration/100*2)}", True, ('white'))
         # display game HUD with text
         self.screen.blit(self.hud_game, (0, 0))
         self.screen.blit(self.score_text, (50, 20))
+        self.screen.blit(self.powerup_text, (screen_width/2 - 100, 20))
         self.screen.blit(self.coins_text, (screen_width - self.coins_text.get_width() - 50, 20))
 
     def draw_game_over(self):
@@ -61,14 +64,14 @@ class Game:
         self.score_text = medium_font.render(f"Score: {int(self.player.score / 10)}", True, ('white'))
         self.max_score_text = medium_font.render(f"High score: {int(self.player.max_score / 10)}", True, ('white'))
         self.coins_text = medium_font.render(f"Coins: {(self.player.coins)}", True, ('white'))
-        self.direction_text = medium_font.render("R - Restart / ESC - Menu", True, ('white'))
+        self.direction_text = medium_font.render("R - Restart      ESC - Menu", True, ('white'))
         
         # display game over UI
         self.screen.blit(self.controls_game, self.controls_game_rect)
         # display game over texts at different Y positions
-        y = [220, 300, 350, 400, 500]
+        y = [230, 310, 350, 400, 500]
         for text in [self.game_over_text, self.score_text, self.max_score_text, self.coins_text, self.direction_text]:
-            text_rect = text.get_rect(center=(screen_width / 2 - text.get_height() / 2, y.pop(0)))
+            text_rect = text.get_rect(center=(screen_width / 2, y.pop(0)))
             self.screen.blit(text, text_rect)
 
     def game(self, delta_time):
@@ -85,7 +88,7 @@ class Game:
 
         self.draw_game_hud()
 
-    #* main game loop
+    # main game loop
     def run(self):
         running = True
         while running:
@@ -106,8 +109,7 @@ class Game:
                             self.reset_game()
                         if event.key == pygame.K_ESCAPE:
                             set_game_state('menu')
-                            if get_music(): play_music('menu')
-                            
+                            if get_music(): play_music('menu')        
 
             # game logic based on state
             if game_state == 'play':
@@ -120,7 +122,6 @@ class Game:
                 self.draw_game_over()
             elif game_state == 'exit':
                 running = False
-
 
             pygame.display.update()
 
