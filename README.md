@@ -126,7 +126,7 @@ Hra využíva minimalistický pixel art štýl, kde boli použité assety [Dino-
 V menu je použitá príjemná hudba [Emotional Piano Music](https://pixabay.com/music/modern-classical-emotional-piano-music-256262/) ktorá je charakteristická pre menu. Naopak, v hre je akčná 8 bitová hudba [8-bit-menu](https://youtu.be/6r2Z0EGk0D8?si=p1xDEklEOuksgJm3), ktorá perfektne ladí s minimalistickým pixel art štýlom a podporuje dynamiku hry.
 
 ### **4.2 Zvukové efekty**
-Zvuky v hre pochádzajú z Pixabay[https://pixabay.com/] z ktorých som vybral zvuky pre výber v menu, dopad hráča, zber coinov a powerupov, pričom som sa zameral na to, aby ladili s herným vizuálom a podporovali arkádovú atmosféru.
+Zvuky v hre pochádzajú z [Pixabay](https://pixabay.com) z ktorých som vybral zvuky pre výber v menu, dopad hráča, zber coinov a powerupov, pričom som sa zameral na to, aby ladili s herným vizuálom a podporovali arkádovú atmosféru.
 
 ---
 ## **5. Herné prostredie**
